@@ -1,0 +1,9 @@
+services:
+  ragas-api:
+    build: .
+    container_name: ragas-api
+    restart: unless-stopped
+    ports:
+      - "8800:8000"
+    env_file:
+      - .env

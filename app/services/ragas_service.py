@@ -88,7 +88,11 @@ class RagasEvaluationService:
             max_retries=2,
         )
         try:
-            llm = llm_factory(self.settings.openai_model, client=client)
+            llm = llm_factory(
+                self.settings.openai_model,
+                client=client,
+                max_tokens=self.settings.ragas_max_tokens,
+            )
             embeddings = OpenAIEmbeddings(
                 client=client,
                 model=self.settings.openai_embedding_model,

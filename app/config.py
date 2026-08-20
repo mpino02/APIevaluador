@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4o-mini"
     openai_embedding_model: str = "text-embedding-3-small"
     ragas_timeout: float = Field(default=120.0, gt=0)
+    ragas_max_tokens: int = Field(default=4096, gt=0)
     log_level: str = "INFO"
 
     model_config = SettingsConfigDict(

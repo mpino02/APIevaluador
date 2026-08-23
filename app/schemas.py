@@ -58,6 +58,7 @@ class EvaluationRequest(BaseModel):
 class MetricScores(BaseModel):
     faithfulness: float | None
     answer_relevancy: float | None
+    answer_similarity: float | None
     context_precision: float | None
     context_recall: float | None
 

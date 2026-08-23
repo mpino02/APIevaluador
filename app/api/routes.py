@@ -58,7 +58,7 @@ async def evaluate_rag(
     started = perf_counter()
     metric_names = ["faithfulness", "answer_relevancy"]
     if payload.reference is not None:
-        metric_names.extend(["context_precision", "context_recall"])
+        metric_names.extend(["answer_similarity", "context_precision", "context_recall"])
     logger.info(
         "Inicio de evaluacion contexts=%d reference=%s metrics=%s",
         len(payload.contexts),

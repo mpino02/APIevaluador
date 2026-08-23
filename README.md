@@ -31,10 +31,11 @@ No usa `evaluate()`, `SingleTurnSample`, wrappers de LangChain ni imports legacy
 |---|---|---|
 | `faithfulness` | Consistencia factual de la respuesta con los contextos recuperados | No |
 | `answer_relevancy` | Relevancia de la respuesta respecto de la pregunta | No |
+| `answer_similarity` | Similitud semantica entre la respuesta y la referencia | Si |
 | `context_precision` | Calidad y orden de los contextos recuperados respecto de la referencia | Si |
 | `context_recall` | Cobertura de la informacion de referencia por los contextos | Si |
 
-Cuando no se envia `reference`, `context_precision` y `context_recall` se devuelven como `null`; no se inventan scores. Cualquier `NaN`, infinito positivo o infinito negativo producido legitimamente por una metrica tambien se normaliza a `null`, para garantizar JSON valido.
+Cuando no se envia `reference`, `answer_similarity`, `context_precision` y `context_recall` se devuelven como `null`; no se inventan scores. Cualquier `NaN`, infinito positivo o infinito negativo producido legitimamente por una metrica tambien se normaliza a `null`, para garantizar JSON valido.
 
 ## Estructura
 
@@ -202,6 +203,7 @@ Ejemplo de respuesta:
   "metrics": {
     "faithfulness": 0.98,
     "answer_relevancy": 0.95,
+    "answer_similarity": 0.99,
     "context_precision": 1.0,
     "context_recall": 1.0
   },
@@ -281,6 +283,8 @@ Body:
 ```
 
 Si el flujo no dispone de referencia, omita completamente la propiedad `reference` o envie `null`. Asegurese de que `contexts` sea un array JSON, no un string que contenga JSON serializado.
+
+Para persistir la nueva metrica, ejecute una vez `migrations/001_add_answer_similarity.sql` en PostgreSQL y mapee `{{$json.metrics.answer_similarity}}` a la columna `answer_similarity` del nodo que inserta en `ragas_evaluations`. El body enviado a esta API no cambia.
 
 ## Validacion y errores
 

@@ -22,6 +22,7 @@ class FakeRagasService:
             metrics=MetricScores(
                 faithfulness=0.98,
                 answer_relevancy=0.95,
+                answer_similarity=0.99 if request.reference is not None else None,
                 context_precision=1.0 if request.reference is not None else None,
                 context_recall=1.0 if request.reference is not None else None,
             )
@@ -68,6 +69,7 @@ async def test_valid_post(client: AsyncClient) -> None:
     assert body["metrics"] == {
         "faithfulness": 0.98,
         "answer_relevancy": 0.95,
+        "answer_similarity": 0.99,
         "context_precision": 1.0,
         "context_recall": 1.0,
     }
@@ -114,6 +116,7 @@ async def test_reference_is_optional(client: AsyncClient) -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["reference_provided"] is False
+    assert body["metrics"]["answer_similarity"] is None
     assert body["metrics"]["context_precision"] is None
     assert body["metrics"]["context_recall"] is None
 

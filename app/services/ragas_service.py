@@ -7,7 +7,13 @@ from typing import Any, Awaitable
 from openai import APIConnectionError, APIError, APITimeoutError, AsyncOpenAI, OpenAIError, RateLimitError
 from ragas.embeddings import OpenAIEmbeddings
 from ragas.llms import llm_factory
-from ragas.metrics.collections import AnswerRelevancy, ContextPrecision, ContextRecall, Faithfulness
+from ragas.metrics.collections import (
+    AnswerRelevancy,
+    ContextPrecision,
+    ContextRecall,
+    Faithfulness,
+    SemanticSimilarity,
+)
 
 from app.config import Settings
 from app.schemas import EvaluationRequest, MetricScores
@@ -114,6 +120,12 @@ class RagasEvaluationService:
             if request.reference is not None:
                 tasks.update(
                     {
+                        "answer_similarity": SemanticSimilarity(
+                            embeddings=embeddings
+                        ).ascore(
+                            reference=request.reference,
+                            response=request.answer,
+                        ),
                         "context_precision": ContextPrecision(llm=llm).ascore(
                             user_input=request.question,
                             reference=request.reference,
@@ -134,6 +146,7 @@ class RagasEvaluationService:
                 metrics=MetricScores(
                     faithfulness=scores.get("faithfulness"),
                     answer_relevancy=scores.get("answer_relevancy"),
+                    answer_similarity=scores.get("answer_similarity"),
                     context_precision=scores.get("context_precision"),
                     context_recall=scores.get("context_recall"),
                 )
